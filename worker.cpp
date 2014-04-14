@@ -1,8 +1,8 @@
-#include "exampleworker.h"
+#include "worker.h"
 #include "examplewindow.h"
 #include <sstream>
 
-ExampleWorker::ExampleWorker() :
+Worker::Worker() :
 	m_Mutex(),
 	m_shall_stop(false),
 	m_has_stopped(false),
@@ -14,7 +14,7 @@ ExampleWorker::ExampleWorker() :
 // Accesses to these data are synchronized by a mutex.
 // Some microseconds can be saved by getting all data at once, instead of having
 // separate get_fraction_done() and get_message() methods.
-void ExampleWorker::get_data(double* fraction_done, Glib::ustring* message) const
+void Worker::get_data(double* fraction_done, Glib::ustring* message) const
 {
 	Glib::Threads::Mutex::Lock lock(m_Mutex);
 
@@ -25,19 +25,19 @@ void ExampleWorker::get_data(double* fraction_done, Glib::ustring* message) cons
 		*message = m_message;
 }
 
-void ExampleWorker::stop_work()
+void Worker::stop_work()
 {
 	Glib::Threads::Mutex::Lock lock(m_Mutex);
 	m_shall_stop = true;
 }
 
-bool ExampleWorker::has_stopped() const
+bool Worker::has_stopped() const
 {
 	Glib::Threads::Mutex::Lock lock(m_Mutex);
 	return m_has_stopped;
 }
 
-void ExampleWorker::do_work(ExampleWindow* caller)
+void Worker::do_work(ExampleWindow* caller)
 {
 	{
 		Glib::Threads::Mutex::Lock lock(m_Mutex);

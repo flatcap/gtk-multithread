@@ -1,7 +1,7 @@
-#include "examplewindow.h"
+#include "window.h"
 #include <iostream>
 
-ExampleWindow::ExampleWindow() :
+Window::Window() :
 	m_VBox(Gtk::ORIENTATION_VERTICAL, 5),
 	m_ButtonBox(Gtk::ORIENTATION_HORIZONTAL),
 	m_ButtonStart("Start work"),
@@ -47,12 +47,12 @@ ExampleWindow::ExampleWindow() :
 	m_ButtonBox.set_layout(Gtk::BUTTONBOX_END);
 
 	// Connect the signal handlers to the buttons.
-	m_ButtonStart.signal_clicked().connect(sigc::mem_fun(*this, &ExampleWindow::on_start_button_clicked));
-	m_ButtonStop.signal_clicked().connect(sigc::mem_fun(*this, &ExampleWindow::on_stop_button_clicked));
-	m_ButtonQuit.signal_clicked().connect(sigc::mem_fun(*this, &ExampleWindow::on_quit_button_clicked));
+	m_ButtonStart.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_start_button_clicked));
+	m_ButtonStop.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_stop_button_clicked));
+	m_ButtonQuit.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_quit_button_clicked));
 
 	// Connect the handler to the dispatcher.
-	m_Dispatcher.connect(sigc::mem_fun(*this, &ExampleWindow::on_notification_from_worker_thread));
+	m_Dispatcher.connect(sigc::mem_fun(*this, &Window::on_notification_from_worker_thread));
 
 	// Create a text buffer mark for use in update_widgets().
 	Glib::RefPtr<Gtk::TextBuffer> buffer = m_TextView.get_buffer();
@@ -63,7 +63,7 @@ ExampleWindow::ExampleWindow() :
 	show_all_children();
 }
 
-void ExampleWindow::on_start_button_clicked()
+void Window::on_start_button_clicked()
 {
 	if (m_WorkerThread)
 	{
@@ -78,7 +78,7 @@ void ExampleWindow::on_start_button_clicked()
 	update_start_stop_buttons();
 }
 
-void ExampleWindow::on_stop_button_clicked()
+void Window::on_stop_button_clicked()
 {
 	if (!m_WorkerThread)
 	{
@@ -92,7 +92,7 @@ void ExampleWindow::on_stop_button_clicked()
 	}
 }
 
-void ExampleWindow::update_start_stop_buttons()
+void Window::update_start_stop_buttons()
 {
 	const bool thread_is_running = m_WorkerThread != 0;
 
@@ -100,7 +100,7 @@ void ExampleWindow::update_start_stop_buttons()
 	m_ButtonStop.set_sensitive(thread_is_running);
 }
 
-void ExampleWindow::update_widgets()
+void Window::update_widgets()
 {
 	double fraction_done;
 	Glib::ustring message_from_worker_thread;
@@ -124,7 +124,7 @@ void ExampleWindow::update_widgets()
 	}
 }
 
-void ExampleWindow::on_quit_button_clicked()
+void Window::on_quit_button_clicked()
 {
 	if (m_WorkerThread)
 	{
@@ -138,12 +138,12 @@ void ExampleWindow::on_quit_button_clicked()
 // notify() is called from ExampleWorker::do_work(). It is executed in the worker
 // thread. It triggers a call to on_notification_from_worker_thread(), which is
 // executed in the GUI thread.
-void ExampleWindow::notify()
+void Window::notify()
 {
 	m_Dispatcher.emit();
 }
 
-void ExampleWindow::on_notification_from_worker_thread()
+void Window::on_notification_from_worker_thread()
 {
 	if (m_WorkerThread && m_Worker.has_stopped())
 	{
@@ -154,3 +154,4 @@ void ExampleWindow::on_notification_from_worker_thread()
 	}
 	update_widgets();
 }
+

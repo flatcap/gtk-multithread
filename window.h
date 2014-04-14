@@ -1,13 +1,13 @@
-#ifndef GTKMM_EXAMPLEWINDOW_H
-#define GTKMM_EXAMPLEWINDOW_H
+#ifndef _WINDOW_H_
+#define _WINDOW_H_
 
 #include <gtkmm.h>
 #include "exampleworker.h"
 
-class ExampleWindow : public Gtk::Window
+class Window : public Gtk::Window
 {
 public:
-	ExampleWindow();
+	Window();
 
 	// Called from the worker thread.
 	void notify();
@@ -39,4 +39,5 @@ private:
 	Glib::Threads::Thread* m_WorkerThread;
 };
 
-#endif // GTKMM_EXAMPLEWINDOW_H
+#endif // _WINDOW_H_
+

@@ -1,17 +1,17 @@
-#ifndef GTKMM_EXAMPLEWORKER_H
-#define GTKMM_EXAMPLEWORKER_H
+#ifndef _WORKER_H_
+#define _WORKER_H_
 
 #include <gtkmm.h>
 
-class ExampleWindow;
+class Window;
 
-class ExampleWorker
+class Worker
 {
 public:
-	ExampleWorker();
+	Worker();
 
 	// Thread function.
-	void do_work(ExampleWindow* caller);
+	void do_work(Window* caller);
 
 	void get_data(double* fraction_done, Glib::ustring* message) const;
 	void stop_work();
@@ -28,4 +28,5 @@ private:
 	Glib::ustring m_message;
 };
 
-#endif // GTKMM_EXAMPLEWORKER_H
+#endif // _WORKER_H_
+
