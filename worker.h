@@ -22,9 +22,9 @@ private:
 	mutable Glib::Threads::Mutex m_Mutex;
 
 	// Data used by both GUI thread and worker thread.
-	bool m_shall_stop;
-	bool m_has_stopped;
-	double m_fraction_done;
+	bool m_shall_stop = false;
+	bool m_has_stopped = false;
+	double m_fraction_done = 0.0;
 	Glib::ustring m_message;
 };
 

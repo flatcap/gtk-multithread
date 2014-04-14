@@ -2,12 +2,7 @@
 #include "window.h"
 #include <sstream>
 
-Worker::Worker() :
-	m_Mutex(),
-	m_shall_stop(false),
-	m_has_stopped(false),
-	m_fraction_done(0.0),
-	m_message()
+Worker::Worker()
 {
 }
 
