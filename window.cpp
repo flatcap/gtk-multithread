@@ -65,28 +65,21 @@ Window::Window() :
 
 void Window::on_start_button_clicked()
 {
-	if (m_WorkerThread)
-	{
+	if (m_WorkerThread) {
 		std::cout << "Can't start a worker thread while another one is running." << std::endl;
-	}
-	else
-	{
+	} else {
 		// Start a new worker thread.
-		m_WorkerThread = Glib::Threads::Thread::create(
-			sigc::bind(sigc::mem_fun(m_Worker, &ExampleWorker::do_work), this));
+		m_WorkerThread = Glib::Threads::Thread::create(sigc::bind(sigc::mem_fun(m_Worker, &Worker::do_work), this));
 	}
 	update_start_stop_buttons();
 }
 
 void Window::on_stop_button_clicked()
 {
-	if (!m_WorkerThread)
-	{
+	if (!m_WorkerThread) {
 		std::cout << "Can't stop a worker thread. None is running." << std::endl;
-	}
-	else
-	{
-	 // Order the worker thread to stop.
+	} else {
+		// Order the worker thread to stop.
 		m_Worker.stop_work();
 		m_ButtonStop.set_sensitive(false);
 	}
@@ -108,8 +101,7 @@ void Window::update_widgets()
 
 	m_ProgressBar.set_fraction(fraction_done);
 
-	if (message_from_worker_thread != m_TextView.get_buffer()->get_text())
-	{
+	if (message_from_worker_thread != m_TextView.get_buffer()->get_text()) {
 		Glib::RefPtr<Gtk::TextBuffer> buffer = m_TextView.get_buffer();
 		buffer->set_text(message_from_worker_thread);
 
@@ -126,8 +118,7 @@ void Window::update_widgets()
 
 void Window::on_quit_button_clicked()
 {
-	if (m_WorkerThread)
-	{
+	if (m_WorkerThread) {
 		// Order the worker thread to stop and wait for it to stop.
 		m_Worker.stop_work();
 		m_WorkerThread->join();
@@ -135,7 +126,7 @@ void Window::on_quit_button_clicked()
 	hide();
 }
 
-// notify() is called from ExampleWorker::do_work(). It is executed in the worker
+// notify() is called from Worker::do_work(). It is executed in the worker
 // thread. It triggers a call to on_notification_from_worker_thread(), which is
 // executed in the GUI thread.
 void Window::notify()
@@ -145,8 +136,7 @@ void Window::notify()
 
 void Window::on_notification_from_worker_thread()
 {
-	if (m_WorkerThread && m_Worker.has_stopped())
-	{
+	if (m_WorkerThread && m_Worker.has_stopped()) {
 		// Work is done.
 		m_WorkerThread->join();
 		m_WorkerThread = 0;

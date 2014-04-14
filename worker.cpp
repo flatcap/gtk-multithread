@@ -1,5 +1,5 @@
 #include "worker.h"
-#include "examplewindow.h"
+#include "window.h"
 #include <sstream>
 
 Worker::Worker() :
@@ -37,7 +37,7 @@ bool Worker::has_stopped() const
 	return m_has_stopped;
 }
 
-void Worker::do_work(ExampleWindow* caller)
+void Worker::do_work(Window* caller)
 {
 	{
 		Glib::Threads::Mutex::Lock lock(m_Mutex);
@@ -47,28 +47,24 @@ void Worker::do_work(ExampleWindow* caller)
 	} // The mutex is unlocked here by lock's destructor.
 
 	// Simulate a long calculation.
-	for (int i = 0; ; ++i) // do until break
-	{
+	for (int i = 0; ; ++i) { // do until break
 		Glib::usleep(250000); // microseconds
 
 		Glib::Threads::Mutex::Lock lock(m_Mutex);
 
 		m_fraction_done += 0.01;
 
-		if (i % 4 == 3)
-		{
+		if (i % 4 == 3) {
 			std::ostringstream ostr;
 			ostr << (m_fraction_done * 100.0) << "% done\n";
 			m_message += ostr.str();
 		}
 
-		if (m_fraction_done >= 1.0)
-		{
+		if (m_fraction_done >= 1.0) {
 			m_message += "Finished";
 			break;
 		}
-		if (m_shall_stop)
-		{
+		if (m_shall_stop) {
 			m_message += "Stopped";
 			break;
 		}
@@ -82,3 +78,4 @@ void Worker::do_work(ExampleWindow* caller)
 	lock.release();
 	caller->notify();
 }
+

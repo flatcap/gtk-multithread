@@ -10,3 +10,4 @@ int main (int argc, char* argv[])
 	//Shows the window and returns when it is closed.
 	return app->run(window);
 }
+

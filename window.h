@@ -2,7 +2,7 @@
 #define _WINDOW_H_
 
 #include <gtkmm.h>
-#include "exampleworker.h"
+#include "worker.h"
 
 class Window : public Gtk::Window
 {
@@ -35,7 +35,7 @@ private:
 	Gtk::TextView m_TextView;
 
 	Glib::Dispatcher m_Dispatcher;
-	ExampleWorker m_Worker;
+	Worker m_Worker;
 	Glib::Threads::Thread* m_WorkerThread;
 };
 
