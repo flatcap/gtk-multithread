@@ -33,8 +33,8 @@ Window::Window (void) :
 	m_ButtonBox.set_layout (Gtk::BUTTONBOX_END);
 
 	m_ButtonStart.signal_clicked().connect (sigc::mem_fun (*this, &Window::on_start_button_clicked));
-	m_ButtonStop.signal_clicked().connect (sigc::mem_fun (*this, &Window::on_stop_button_clicked));
-	m_ButtonQuit.signal_clicked().connect (sigc::mem_fun (*this, &Window::on_quit_button_clicked));
+	m_ButtonStop .signal_clicked().connect (sigc::mem_fun (*this, &Window::on_stop_button_clicked));
+	m_ButtonQuit .signal_clicked().connect (sigc::mem_fun (*this, &Window::on_quit_button_clicked));
 
 	m_Dispatcher.connect (sigc::mem_fun (*this, &Window::on_notification_from_worker_thread));
 
@@ -52,11 +52,12 @@ void Window::on_start_button_clicked (void)
 	if (m_WorkerThread) {
 		std::cout << "Can't start a worker thread while another one is running." << std::endl;
 	} else {
-		notify_t n = std::bind(&Window::notify, this);
+		m_WorkerThread = new std::thread (std::bind (&Worker::do_work, &m_Worker, (notify_t) std::bind(&Window::notify, this)));
 
-		auto w = std::bind (&Worker::do_work, &m_Worker, n);
-
-		m_WorkerThread = new std::thread (w);
+		// Expands to:
+		//	notify_t n = std::bind(&Window::notify, this);
+		//	auto w = std::bind (&Worker::do_work, &m_Worker, n);
+		//	m_WorkerThread = new std::thread (w);
 	}
 	update_start_stop_buttons();
 }
