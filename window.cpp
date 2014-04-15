@@ -87,8 +87,8 @@ void Window::update_start_stop_buttons()
 void Window::update_widgets()
 {
 	double fraction_done;
-	Glib::ustring message_from_worker_thread;
-	m_Worker.get_data(&fraction_done, &message_from_worker_thread);
+	std::string message_from_worker_thread;
+	m_Worker.get_data(fraction_done, message_from_worker_thread);
 
 	m_ProgressBar.set_fraction(fraction_done);
 

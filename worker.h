@@ -15,7 +15,7 @@ public:
 	// Thread function.
 	void do_work(Window* caller);
 
-	void get_data(double* fraction_done, Glib::ustring* message) const;
+	void get_data(double& fraction_done, std::string& message) const;
 	void stop_work();
 	bool has_stopped() const;
 
@@ -27,7 +27,7 @@ private:
 	bool m_shall_stop = false;
 	bool m_has_stopped = false;
 	double m_fraction_done = 0.0;
-	Glib::ustring m_message;
+	std::string m_message;
 };
 
 #endif // _WORKER_H_

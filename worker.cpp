@@ -1,6 +1,6 @@
+#include <sstream>
 #include "worker.h"
 #include "window.h"
-#include <sstream>
 
 Worker::Worker()
 {
@@ -9,15 +9,12 @@ Worker::Worker()
 // Accesses to these data are synchronized by a mutex.
 // Some microseconds can be saved by getting all data at once, instead of having
 // separate get_fraction_done() and get_message() methods.
-void Worker::get_data(double* fraction_done, Glib::ustring* message) const
+void Worker::get_data(double& fraction_done, std::string& message) const
 {
 	std::lock_guard<std::mutex> lock (m_Mutex);
 
-	if (fraction_done)
-		*fraction_done = m_fraction_done;
-
-	if (message)
-		*message = m_message;
+	fraction_done = m_fraction_done;
+	message = m_message;
 }
 
 void Worker::stop_work()
@@ -50,9 +47,9 @@ void Worker::do_work(Window* caller)
 			m_fraction_done += 0.01;
 
 			if (i % 4 == 3) {
-				std::ostringstream ostr;
-				ostr << (m_fraction_done * 100.0) << "% done\n";
-				m_message += ostr.str();
+				std::stringstream str;
+				str << (m_fraction_done * 100.0) << "% done\n";
+				m_message += str.str();
 			}
 
 			if (m_fraction_done >= 1.0) {
