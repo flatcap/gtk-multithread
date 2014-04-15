@@ -48,16 +48,16 @@ void Worker::do_work(Window* caller)
 
 			if (i % 4 == 3) {
 				std::stringstream str;
-				str << (m_fraction_done * 100.0) << "% done\n";
-				m_message += str.str();
+				str << (m_fraction_done * 100.0) << "% done";
+				m_message = str.str();
 			}
 
 			if (m_fraction_done >= 1.0) {
-				m_message += "Finished";
+				m_message = "Finished";
 				break;
 			}
 			if (m_shall_stop) {
-				m_message += "Stopped";
+				m_message = "Stopped";
 				break;
 			}
 		} // End of scope

@@ -25,10 +25,8 @@ private:
 	Gtk::ButtonBox m_ButtonBox;
 	Gtk::Button m_ButtonStart;
 	Gtk::Button m_ButtonStop;
-	Gtk::Button m_ButtonQuit;
 	Gtk::ProgressBar m_ProgressBar;
-	Gtk::ScrolledWindow m_ScrolledWindow;
-	Gtk::TextView m_TextView;
+	Gtk::Entry m_Entry;
 
 	Glib::Dispatcher m_Dispatcher;
 	Worker m_Worker;

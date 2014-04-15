@@ -6,18 +6,8 @@ Window::Window() :
 	m_ButtonBox(Gtk::ORIENTATION_HORIZONTAL),
 	m_ButtonStart("Start work"),
 	m_ButtonStop("Stop work"),
-	m_ButtonQuit("_Quit", /* mnemonic= */ true),
-	m_ProgressBar(),
-	m_ScrolledWindow(),
-	m_TextView(),
-	m_Dispatcher(),
-	m_Worker(),
 	m_WorkerThread(0)
 {
-	set_title("Multi-threaded example");
-	set_border_width(5);
-	set_default_size(300, 300);
-
 	add(m_VBox);
 
 	m_VBox.pack_start(m_ProgressBar, Gtk::PACK_SHRINK);
@@ -25,31 +15,22 @@ Window::Window() :
 	m_ProgressBar.set_text("Fraction done");
 	m_ProgressBar.set_show_text();
 
-	m_ScrolledWindow.add(m_TextView);
+	m_VBox.pack_start(m_Entry);
 
-	m_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-
-	m_VBox.pack_start(m_ScrolledWindow);
-
-	m_TextView.set_editable(false);
+	m_Entry.set_editable(false);
 
 	m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
 
 	m_ButtonBox.pack_start(m_ButtonStart, Gtk::PACK_SHRINK);
 	m_ButtonBox.pack_start(m_ButtonStop, Gtk::PACK_SHRINK);
-	m_ButtonBox.pack_start(m_ButtonQuit, Gtk::PACK_SHRINK);
 	m_ButtonBox.set_border_width(5);
 	m_ButtonBox.set_spacing(5);
 	m_ButtonBox.set_layout(Gtk::BUTTONBOX_END);
 
 	m_ButtonStart.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_start_button_clicked));
 	m_ButtonStop.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_stop_button_clicked));
-	m_ButtonQuit.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_quit_button_clicked));
 
 	m_Dispatcher.connect(sigc::mem_fun(*this, &Window::on_notification_from_worker_thread));
-
-	Glib::RefPtr<Gtk::TextBuffer> buffer = m_TextView.get_buffer();
-	buffer->create_mark("last_line", buffer->end(), /* left_gravity= */ true);
 
 	update_start_stop_buttons();
 
@@ -92,15 +73,8 @@ void Window::update_widgets()
 
 	m_ProgressBar.set_fraction(fraction_done);
 
-	if (message_from_worker_thread != m_TextView.get_buffer()->get_text()) {
-		Glib::RefPtr<Gtk::TextBuffer> buffer = m_TextView.get_buffer();
-		buffer->set_text(message_from_worker_thread);
-
-		Gtk::TextIter iter = buffer->end();
-		iter.set_line_offset(0); // Beginning of last line
-		Glib::RefPtr<Gtk::TextMark> mark = buffer->get_mark("last_line");
-		buffer->move_mark(mark, iter);
-		m_TextView.scroll_to(mark);
+	if (message_from_worker_thread != m_Entry.get_text()) {
+		m_Entry.set_text(message_from_worker_thread);
 	}
 }
 
