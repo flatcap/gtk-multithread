@@ -1,6 +1,8 @@
 #ifndef _WORKER_H_
 #define _WORKER_H_
 
+#include <mutex>
+
 #include <gtkmm.h>
 
 class Window;
@@ -19,7 +21,7 @@ public:
 
 private:
 	// Synchronizes access to member data.
-	mutable Glib::Threads::Mutex m_Mutex;
+	mutable std::mutex m_Mutex;
 
 	// Data used by both GUI thread and worker thread.
 	bool m_shall_stop = false;
