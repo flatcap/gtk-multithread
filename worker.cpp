@@ -1,35 +1,39 @@
+#include <string>
+#include <thread>
+#include <mutex>
 #include <sstream>
+
 #include "worker.h"
 #include "window.h"
 
-Worker::Worker()
+Worker::Worker (void)
 {
 }
 
-// Accesses to these data are synchronized by a mutex.
-// Some microseconds can be saved by getting all data at once, instead of having
-// separate get_fraction_done() and get_message() methods.
-void Worker::get_data(double& fraction_done, std::string& message) const
+Worker::~Worker()
+{
+}
+
+void Worker::get_data (double& fraction_done, std::string& message)
 {
 	std::lock_guard<std::mutex> lock (m_Mutex);
-
 	fraction_done = m_fraction_done;
 	message = m_message;
 }
 
-void Worker::stop_work()
+void Worker::stop_work (void)
 {
 	std::lock_guard<std::mutex> lock (m_Mutex);
 	m_shall_stop = true;
 }
 
-bool Worker::has_stopped() const
+bool Worker::has_stopped (void)
 {
 	std::lock_guard<std::mutex> lock (m_Mutex);
 	return m_has_stopped;
 }
 
-void Worker::do_work(Window* caller)
+void Worker::do_work (Window* caller)
 {
 	m_Mutex.lock();
 	m_has_stopped = false;
@@ -39,7 +43,7 @@ void Worker::do_work(Window* caller)
 
 	// Simulate a long calculation.
 	for (int i = 0; ; ++i) { // do until break
-		Glib::usleep(250000); // microseconds
+		Glib::usleep (100000); // microseconds
 
 		{// Scope lock
 			std::lock_guard<std::mutex> lock (m_Mutex);

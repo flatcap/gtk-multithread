@@ -7,19 +7,20 @@
 class Window : public Gtk::Window
 {
 public:
-	Window();
+	Window (void);
+	virtual ~Window();
 
-	void notify();
+	void notify (void);
 
 private:
-	void on_start_button_clicked();
-	void on_stop_button_clicked();
-	void on_quit_button_clicked();
+	void on_start_button_clicked (void);
+	void on_stop_button_clicked (void);
+	void on_quit_button_clicked (void);
 
-	void update_start_stop_buttons();
-	void update_widgets();
+	void update_start_stop_buttons (void);
+	void update_widgets (void);
 
-	void on_notification_from_worker_thread();
+	void on_notification_from_worker_thread (void);
 
 	Gtk::Box m_VBox;
 	Gtk::ButtonBox m_ButtonBox;

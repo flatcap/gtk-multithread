@@ -2,6 +2,7 @@
 #define _WORKER_H_
 
 #include <mutex>
+#include <thread>
 
 #include <gtkmm.h>
 
@@ -10,20 +11,19 @@ class Window;
 class Worker
 {
 public:
-	Worker();
+	Worker (void);
+	virtual ~Worker();
 
-	// Thread function.
-	void do_work(Window* caller);
+	void do_work (Window* caller);
 
-	void get_data(double& fraction_done, std::string& message) const;
-	void stop_work();
-	bool has_stopped() const;
+	void get_data (double& fraction_done, std::string& message);
+	void stop_work (void);
+	bool has_stopped (void);
 
 private:
-	// Synchronizes access to member data.
-	mutable std::mutex m_Mutex;
+	std::mutex m_Mutex;
 
-	// Data used by both GUI thread and worker thread.
+	// Shared data
 	bool m_shall_stop = false;
 	bool m_has_stopped = false;
 	double m_fraction_done = 0.0;

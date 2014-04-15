@@ -34,16 +34,16 @@ all:	$(OBJDIR) $(DEPDIR) $(OBJ) $(OUT) tags
 #
 # Pretty print
 #
-V	      = @
-Q	      = $(V:1=)
-QUIET_CC      = $(Q:@=@echo 'CC      '$<;)
-QUIET_LINK    = $(Q:@=@echo 'LD      '$@;)
-QUIET_TAGS    = $(Q:@=@echo 'TAGS    '$@;)
+V		= @
+Q		= $(V:1=)
+QUIET_CC	= $(Q:@=@echo 'CC      '$<;)
+QUIET_LINK	= $(Q:@=@echo 'LD      '$@;)
+QUIET_TAGS	= $(Q:@=@echo 'TAGS    '$@;)
 
 ifneq ($(filter s% -s%,$(MAKEFLAGS)),)
-	QUIET_CC      =
-	QUIET_LINK    =
-	QUIET_TAGS    =
+	QUIET_CC	=
+	QUIET_LINK	=
+	QUIET_TAGS	=
 endif
 
 # ----------------------------------------------------------------------------
