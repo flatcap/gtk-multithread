@@ -1,12 +1,16 @@
-#include "window.h"
+#include <functional>
 #include <iostream>
+#include <string>
+#include <thread>
+
+#include "window.h"
 
 Window::Window (void) :
 	m_VBox (Gtk::ORIENTATION_VERTICAL, 5),
 	m_ButtonBox (Gtk::ORIENTATION_HORIZONTAL),
 	m_ButtonStart ("Start work"),
 	m_ButtonStop ("Stop work"),
-	m_WorkerThread(0)
+	m_ButtonQuit ("_Quit", true)
 {
 	add (m_VBox);
 
@@ -23,12 +27,14 @@ Window::Window (void) :
 
 	m_ButtonBox.pack_start (m_ButtonStart, Gtk::PACK_SHRINK);
 	m_ButtonBox.pack_start (m_ButtonStop, Gtk::PACK_SHRINK);
+	m_ButtonBox.pack_start (m_ButtonQuit, Gtk::PACK_SHRINK);
 	m_ButtonBox.set_border_width(5);
 	m_ButtonBox.set_spacing(5);
 	m_ButtonBox.set_layout (Gtk::BUTTONBOX_END);
 
 	m_ButtonStart.signal_clicked().connect (sigc::mem_fun (*this, &Window::on_start_button_clicked));
 	m_ButtonStop.signal_clicked().connect (sigc::mem_fun (*this, &Window::on_stop_button_clicked));
+	m_ButtonQuit.signal_clicked().connect (sigc::mem_fun (*this, &Window::on_quit_button_clicked));
 
 	m_Dispatcher.connect (sigc::mem_fun (*this, &Window::on_notification_from_worker_thread));
 
@@ -46,7 +52,11 @@ void Window::on_start_button_clicked (void)
 	if (m_WorkerThread) {
 		std::cout << "Can't start a worker thread while another one is running." << std::endl;
 	} else {
-		m_WorkerThread = Glib::Threads::Thread::create (sigc::bind (sigc::mem_fun (m_Worker, &Worker::do_work), this));
+		notify_t n = std::bind(&Window::notify, this);
+
+		auto w = std::bind (&Worker::do_work, &m_Worker, n);
+
+		m_WorkerThread = new std::thread (w);
 	}
 	update_start_stop_buttons();
 }
@@ -87,6 +97,7 @@ void Window::on_quit_button_clicked (void)
 	if (m_WorkerThread) {
 		m_Worker.stop_work();
 		m_WorkerThread->join();
+		m_WorkerThread = nullptr;
 	}
 	hide();
 }
@@ -104,7 +115,7 @@ void Window::on_notification_from_worker_thread (void)
 	if (m_WorkerThread && m_Worker.has_stopped()) {
 		// Work is done.
 		m_WorkerThread->join();
-		m_WorkerThread = 0;
+		m_WorkerThread = nullptr;
 		update_start_stop_buttons();
 	}
 	update_widgets();

@@ -1,7 +1,10 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
+#include <thread>
+
 #include <gtkmm.h>
+
 #include "worker.h"
 
 class Window : public Gtk::Window
@@ -26,12 +29,13 @@ private:
 	Gtk::ButtonBox m_ButtonBox;
 	Gtk::Button m_ButtonStart;
 	Gtk::Button m_ButtonStop;
+	Gtk::Button m_ButtonQuit;
 	Gtk::ProgressBar m_ProgressBar;
 	Gtk::Entry m_Entry;
 
 	Glib::Dispatcher m_Dispatcher;
 	Worker m_Worker;
-	Glib::Threads::Thread* m_WorkerThread;
+	std::thread *m_WorkerThread = nullptr;
 };
 
 #endif // _WINDOW_H_

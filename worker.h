@@ -1,20 +1,20 @@
 #ifndef _WORKER_H_
 #define _WORKER_H_
 
+#include <functional>
 #include <mutex>
+#include <string>
 #include <thread>
 
-#include <gtkmm.h>
-
-class Window;
+typedef std::function<void(void)> notify_t;
 
 class Worker
 {
 public:
-	Worker (void);
-	virtual ~Worker();
+	Worker (void)     = default;
+	virtual ~Worker() = default;
 
-	void do_work (Window* caller);
+	void do_work (notify_t callback);
 
 	void get_data (double& fraction_done, std::string& message);
 	void stop_work (void);
@@ -23,9 +23,10 @@ public:
 private:
 	std::mutex m_Mutex;
 
-	// Shared data
-	bool m_shall_stop = false;
+	bool m_shall_stop  = false;
 	bool m_has_stopped = false;
+
+	// Shared data
 	double m_fraction_done = 0.0;
 	std::string m_message;
 };
